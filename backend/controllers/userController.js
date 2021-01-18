@@ -4,7 +4,7 @@ import User from '../models/userModel.js'
 
 
 //@DESC     Auth user and get token 
-//@ROUTE    POST /api/user/login
+//@ROUTE    POST /api/users/login
 //@ACCESS   access : public 
 const authUser = asyncHandler(async(req, res) => {
    const {email, password} = req.body
@@ -18,12 +18,13 @@ const authUser = asyncHandler(async(req, res) => {
          name: user.name,
          email: user.email,
          isAdmin: user.isAdmin,
+         // token: null,
          token: generateToken(user._id),
       })
    } else {
       res.status(401)
-      throw new Error('Invalid user or password!')
-   }
+      throw new Error('Invalid email or password!')
+   } 
 })
 
 
@@ -38,7 +39,7 @@ const registerUser = asyncHandler(async(req, res) => {
 
    //check if user exists 
    if (userExists) {
-      res.send(400)
+      res.status(400)
       throw new Error('User already exists')
    }
 
@@ -51,7 +52,7 @@ const registerUser = asyncHandler(async(req, res) => {
 
    //once user created, authenticate it automatically
    if (user) {
-      res.send({
+      res.status(201).json({
           _id: user._id,
          name: user.name,
          email: user.email,
@@ -59,7 +60,7 @@ const registerUser = asyncHandler(async(req, res) => {
          token: generateToken(user._id),
       })
    }else {
-      res.send(400)
+      res.status(400)
       throw new Error('Invalid User Data')
    }
 

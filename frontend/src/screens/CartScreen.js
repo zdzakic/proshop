@@ -22,7 +22,7 @@ const CartScreen = ({match, location, history }) => {
       if(productId) {
          dispatch(addToCart(productId, qty))
       }
-   }, [dispatch.apply, productId, qty])
+   }, [dispatch, productId, qty])
 
 
    const removeFromCartHandler = (id) => {
