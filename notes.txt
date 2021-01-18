@@ -1,0 +1,542 @@
+#donwload node.js
+
+#create reach app called front-end 
+npx create-react-app frontend   
+
+#go to fonrend dir and run dev server
+npm start
+
+app.js main app file 
+
+arrow function can be refactored like below
+function App() {} goes to 
+const App = () => {}
+
+- create src/components folder
+#all react components, home, product screen, delete etc will go to src/components folder
+
+- create Header.js in components folders
+type rafce to get arrow based React components
+
+- create footer.js
+- import header.js and footer.js into the app.js
+import Header from './components/Header';
+import Footer from './components/Footer';
+
+call the header and footer in amin app file by adding
+<Header /> and <footer />
+
+- install react bootstrap or better booswatch ''
+- import file into the indexp.js file 
+
+- install react bootstrap, go to front end folder 
+npm install react-bootstrap
+
+- import container component from boostrap into app.js, Header.js and Footer.js
+import {Container} from 'react-bootstrap';
+
+- add container wrapper in app.js, Footer and Header js
+- add basic styling on index.css file under src
+
+- grab the navbar from react components  and place into the Header.js file 
+- import Navbar, Nav and Container into the Header.js file 
+import React from 'react';
+import {Navbar, Nav, Container} from 'react-bootstrap';
+
+- add fontawesome cdn link (check cdnjs.com site) to index.html file 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" />
+- add shoping and login fa icons to header.js file
+
+- copy images to public folder
+- copy product.js file to src dir
+
+#create homescreen component
+- create screen and there HomeScreen.js file as react component   
+- import product.js file inot HomeScreen file
+
+#create product.js component (in components folder) as Card div component with text and body properties
+- this one will render signle component with all html markups
+
+#create Rating react component which will take 3 values (values, text, color)
+- set default color for ratign star in Raiting.js file as following
+Rating.defaultProps = {
+   color: '#f8e825'
+}
+
+- defne prop (argument) type by importing compo type impt or
+import PropTypes from 'prop-types'
+- define prop types for arguement values before exports 
+
+Rating.propTypes = {
+   value: PropTypes.number.isRequired,
+   text: PropTypes.string.isRequired,
+   color: PropTypes.string,
+}
+
+- add extra styling to index.css file 
+.rating span 
+
+- install react router and react router bootstrap
+npm i react-router-dom react-router-bootstrap
+- import it to app.js file 
+import {BrowserRouter as Router} from 'react-router-dom';
+- wrap entire <div> in app.js file in Router component 
+- replace HomeScreen componet with router path 
+<Container> 
+   <Route path="/" component={HomeScreen}/>
+</Container>
+
+#create ProductScreen.js component 
+- import into app.js
+#add new route to app.js file   
+ <Route path='/product/:id' component={ProductScreen} />
+
+ #replace links in Product.js file (instead of <a> use react link component )
+ - import link comp from react-dom 
+ - replace <a? tag with <Link>
+ <Link to={`/product/${product._id}`}>
+            <Card.Img src={product.image} variant='top' /> 
+</Link>
+
+
+- do the same in header.js links for cart and login (but with another component which does the same thing)
+import {LinkContainer} from 'react-router-bootstrap';
+- replace ahref tags with LinkWrapper tag
+<LinkContainer>
+   <Navbar.Brand to='/'>Velo e-SHOP</Navbar.Brand>
+</LinkContainer>
+- add the same for /cart and /login routes (with this method no need to refresh the page=faster)
+
+#add product.js component as ProductScreen.js
+- import LInk from Rotyer component
+- import Row, Col, Image, ListGrp, Card, Button from react-bootstrap
+- add function where passing parametar is _id 
+- extedn funtinality of displaying detailed page of product  under ProductScreen.js render 
+
+#setup BACKEND APP 
+- create folder backend in the root 
+- go to root folder (not backend) and run
+npm init 
+- install node express from root folder
+npm install express
+- create server.js main entry file in backend folder
+- create backend/data fodler and copy  product.js file in there 
+- create routes to server data from this file 
+
+#setup server.js file
+- set line to require nodule express 
+const express = require('express')
+const app = express()
+app.listen(5000, console.log('Server running on port 5000'))
+- start backend Server
+node backend/server 
+
+#edit the package.json file and edit script tag to include start server 
+"scripts": {
+    "start": "node backend/server",
+  },
+
+  #create main route in server.js file for '/'
+  app.get('/',(req, res) => {
+   res.send('API is running')
+})
+
+# export module in backend/data/products.js file 
+module.export = products
+
+#import module into the server.js so you can access json dict
+const products = require('./data/products')
+- set the route for products
+- set the route for individual product (pass parametar _id from product.json)
+// product route
+app.get('/api/products', (req, res) => {
+   res.json(products)
+})
+
+// individual  product route
+app.get('/api/products/:id', (req, res) => {
+   const product = products.find(p => p._id === req.params.id)
+   res.json(product)
+})
+
+#go to frontend  and setup to fetch products from api route in server.js file
+- go to frontend folder
+- install axios lib (npm i axios ) | http client access 
+- import useState, useEffect hooks into the homeScreen.js file 
+
+#setup proxy to call backend on port 5000
+add proxy into the fronend package.json file 
+{
+  "name": "frontend",
+  "proxy": "http:127.0.0.1:5000",
+  "version": "0.1.0",
+  ... 
+- restart the server 
+
+#do the same call to backed to detail product page
+- import useState and useEffect to ProductScreen.js page
+- delete products.js file as all coms are now going over backend server
+
+-install nodemon as dependencies so you can run FE and BE server concurrently (from root)
+npm i -D nodemon concurrently
+- go to package.json (under root) file and add start of backend server
+"scripts": {
+    "start": "node backend/server",
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurently \"npm run server\" \"npm run client\""
+  },
+- run both backend/front end server from root dir   
+npm run dev 
+
+#ENVIROMENTAL VARIABLES
+- install .env package
+npm i dotenv
+- run backend server only
+npm run server 
+
+- edit server.js file and include .env package  and set config 
+const dotenv = require('dotenv')
+//init .env
+dotenv.config()
+- create .env file in root dir 
+- add .env for example some vars like 
+NODE_ENV = development
+NODE_PORT = 5000
+- restart server 
+- call variable in server.js file like below
+const PORT = process.env.NODE_PORT || 5000 
+- make sure .env is listed in .gitignore 
+
+- add module to backend server so you can import it like frontend
+"scripts": {
+    "start": "node backend/server",
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+ =>   "type": "module"
+
+- instead of require, you can impport now
+const express = require('express')
+const products = require('./data/products')
+const dotenv = require('dotenv')
+
+import express from 'express'
+import products from './data/products'
+
+- in products.js file add export module back 
+
+
+- create mongodb accoutn and run db in cloud
+- downlaod mongodb compas and install (its desktop tool)
+- create user and db on cloud mongodb (zdz/zdz1234)
+- add network address so you can access to db
+- create db and collection proshop and collection product via cloud
+- setup mngod db GUI compas to connect to db (conenction string in cloud)
+- get connection string for you app | mongodb+srv://zdz:<password>@cluster.7jjf1.mongodb.net/<dbname>?retryWrites=true&w=majority
+- set connection string in .env file and close the atlas 
+- install mongoosse tool which is ORM tool | be in the root
+npm i mongoose 
+- create folder config in backend folder
+- create a file db.js in that folder and setup connectin string
+- bring this info into the server.js file 
+- make sure db.js file loads env module before db and app  like below  
+//init .env
+dotenv.config()  
+
+// init db connection
+connectDB()
+
+const app = express()
+
+#install package colors  
+npm i colors 
+
+#MODELING DB 
+- createe folder models in backend dir 
+- create 3 models, userMOdel.js, productModel.js and orderModel.js for begining    
+- import mongoose on all thre models  
+- create user Schema with objects (db fields ) as parametars
+- export userSchema and versy same apply to other models  
+-- 
+import mongoose from 'mongoose'
+
+const userSchema = mongoose.Schema({
+   name: { 
+      type: String,
+      required: true
+   },
+   email: { 
+      type: String,
+      required: true,
+      unique: true,
+   },
+   password: { 
+      type: String,
+      required: true
+   },
+   isAdmin: { 
+      type: Boolean,
+      required: true,
+      default: false
+   }
+}, {
+   timestamps: true
+})
+
+const User = mongoose.model('User', userSchema)
+
+export default User
+
+--
+- pay attention to referenace models like User and Product (foreign keys)
+
+#import data from products.js file into DB
+- remove _id from file as DB will automticly add it 
+- create users.js file in data dir whcih will be used to create users
+- install bycryptjs for password hashing  and hash the password in users.js file  | bcrypt.hashSync('pass', 10)
+npm i bcryptjs
+- create seeders.js script to import data (in backend dir) with some arguments  
+- you will need to update root package.json file to call this script 
+"scripts": {
+    "start": "node backend/server",
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "data:import":"node backend/seeder",
+    "data:destroy":"node backend/seeder -d"
+
+# to import data to DB  based on seeder.js and package.json file where you registr cmd 
+npm run data:import || that does not work but it works from console like :
+node backend/seeder.js | import data
+node backed/seeder.js -d | destroy data 
+
+#ROUTES
+- in backend folder create routes folder 
+- in routes folder create productRoute.js 
+- cut and past product and product id routes from server.js file 
+- in server.js file get import this file 
+- in server.js file import this routes for product and product id 
+- you can remove product.js file 
+- import products from model/productModel into the productRoutes file
+
+- install epxress-async-handler extentions 
+- wrap up async all for routes
+- startun backend server and check localhost:5000/api/products and /api/products/id 
+- install postman cleant and test above 
+
+# custom error handling in case product id is not a valid mongo object
+- setup middleware for custom messages with app.use() \ owerwritte default messagges user does not want to see
+//handle custom messages via middleware layer
+app.use((err, req, res, next ) => {
+   const statusCode = res.statusCode === 200 ? 500 : res.statusCode
+   res.status(statusCode)
+   res.json({ 
+      message: err.message,
+      stack: process.env.NODE_ENV === 'production' ? null : err.stack,  // return errors in dev mode only 
+   })
+})
+
+- define non existin url via middleware 
+app.use((req, res, next) => {
+   const error = new Error(`Not Found - ${req.originalUrl}`)
+   res.status(404)
+   next(error)
+})
+
+# refactor above errors to middleware js file  
+- create middleware folder in backedn 
+- create errorMiddleware.js file in there and cut and past details like 
+
+-- 
+const notFound = (req, res, next) => {
+   const error = new Error(`Not Found - ${req.originalUrl}`)
+   res.status(404)
+   next(error)
+}
+
+
+const errorHandler = (err, req, res, next ) => {
+   const statusCode = res.statusCode === 200 ? 500 : res.statusCode
+   res.status(statusCode)
+   res.json({ 
+      message: err.message,
+      stack: process.env.NODE_ENV === 'production' ? null : err.stack,  // return errors in dev mode only 
+   })
+}
+
+- import moduels into main server.js file  
+import {notFound, errorHandler} from './middleware/errorMiddleware.js'
+
+
+#REDUX | seems complex
+- install redux into the front end folder
+npm i redux   react-redux  redux-thunk redux-devtools-extension
+- create store.js file in frontend src directory
+- import components into it 
+- create dir 'reducers' in src directory
+- create folder action in src and all files in it  
+
+# adjust homeScreen.js file to adopet redux methodology 
+
+#add better message display in case of errors and loading icon
+- in components folder create message.js and loader.js file to handle it
+
+#add product detail reducer same concept like for products page
+- add product detail constants (constants for request, success and failure)
+- go to reducer folder and copy productListReducer to productDetailReducer
+- add thi func to store.js file 
+- add func in actions/prodctAction.js file
+- got to productScreen and adjust the file  
+
+## CART setup
+- add quantity fileds in html based on qty of product
+- addToCartHandler setup
+- under screen setup  cartScreen.js file 
+- add this file to app.js main file 
+- add route path in app.js file to CartScreen 
+- redux setup
+- add cart constants for add and remove 
+export const  CART_ADD_ITEM = 'CART_ADD_ITEM'
+export const  CART_REMOVE_ITEM = 'CART_REMOVE_ITEM'
+- add cartReducers.js file
+- add reducer to main store.js file 
+- add action for cart in aciton folder 
+- add function to add item to cart 
+- add functin to remove item from cart
+
+
+## LOGIN functionality | backed setups
+
+#extend route functionallity with controllers
+- replace router functionality with controlers 
+- create controllers dir in backend dir 
+- create productController.js file in ther
+
+#USER funcs
+- some users already exists with user.js file, FYI
+- create userRoutes.js file in routes 
+- create userController.js file in controllers 
+- brin userRoutes.js into the server.js file 
+- add routes in server.js file 
+- add extra func into the userModel to match the password
+- add functionality in userController and test via postman api 
+
+#ading web tokens or JWT
+- npm i jsonwebtoken 
+- in backend create folder utils directory
+- create generateToken.js file  add jwt function and add token secret into .evn file
+- this fun requires 3 args (id, secret and expire)
+- import token into the userController
+
+#creating user protected routes 
+- add route /profiles and all funcs 
+- craeate middleware authMiddleware.js file in middleware
+- files required for this to work are authMiddleware.js, userController.js and userRoutes.
+- add token to each request
+
+#user registration
+- add function registerUser in userController.js
+- export this function 
+- got to user route and import function registerUser
+- create there and route for registerUser as post request like below 
+//route for registered user 
+router.route('/').lockpost(registerUser)
+- go to userModel and add func to ecnrypt password | before we save user, we ecnrypt the password
+- via postman run and make sure you see new user in mongodb 
+
+#add frontend functionality for user registration
+- add login constant, reducer and action first 
+- add userConstants.js file  
+export const USER_LOGIN_REQUEST = 'USER_LOGIN_REQUEST'
+export const USER_LOGIN_SUCCESS = 'USER_LOGIN_SUCCESS'
+export const USER_LOGIN_FAIL = 'USER_LOGIN_FAIL'
+
+- create userLoginReducer file userLoginReducer.js and import constants
+- go to store.js and import userLoginreducers 
+- add userLoginReducer to const reducer in store.js 
+
+- add userAction.js file under actions folder
+- coopy from previues actions and adjust
+- add initial state into the store.js file 
+const userInfoFromStorage = localStorage.getItem('userInfo') 
+? JSON.parse(localStorage.getItem('userInfo')) 
+: null
+
+const initialState = {
+   cart: {cartItems: cartItemsFromStorage},
+   userLogin: {userInfo: userInfoFromStorage}
+}
+
+
+#add login screen  | front end 
+- create loginScreen.js file  
+- create formContainer component in components  
+- create LoginScreen.js in screens folder
+- add route to main app.js file 
+- add dispatch funcs to LoginScreen.js file
+- upon login, redirect user to home screen 
+
+- once logged in, remove sign in icon and add logout
+- navbar change in Header.js file
+- to bring user state, you need redux
+- impoer useDispatch, useSelector from react-redux into Header.js file   
+- addjust Header.js file with this funtionality
+</LinkContainer>
+   {/* // if user logged in */ }
+   {userInfo ? (
+      <NavDropdown title={userInfo.name} id='username'>
+         {/* // display username  */}
+         <LinkContainer to='/profile'>
+            <NavDropdown.Item >Profile</NavDropdown.Item>
+         </LinkContainer>
+            {/* // display logout */}
+            <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
+      </NavDropdown>
+   //else, if user not logged in, display login screen
+   ) : <LinkContainer to='/login'>
+   <Nav.Link ><i className="fa fa-user"></i> Sign In </Nav.Link>
+</LinkContainer>
+
+-add logout functionality in userActions.js file 
+
+
+##ading user registration functionality
+- add constants in userConstants.js file for registration
+export const USER_REGISTER_REQUEST = 'USER_REGISTER_REQUEST'
+export const USER_REGISTER_SUCCESS = 'USER_REGISTER_SUCCESS'
+export const USER_REGISTER_FAIL = 'USER_REGISTER_FAIL'
+
+- go to userReducer.js file, copy userLogin and addjust as userRegister
+- go to store.js, import it and add to reducer object
+- go to action and register action for registration (copy login object and rename it to register)
+- create new registration form under screens/RegisterScreen.js
+- copy loginScreen.js content and adjust it in RegisterScreen.js file 
+- add registerScreen to main app.js
+
+#add profile route
+- create updateUserProfile in userController
+- adjust user routes 
+- add constants for profile page 
+export const USER_DETAILS_REQUEST = 'USER_DETAILS_REQUEST'
+export const USER_DETAILS_SUCCESS = 'USER_DETAILS_SUCCESS'
+export const USER_DETAILS_FAIL = 'USER_DETAILS_FAIL'
+
+- add user profile reducers (copy and adjust userLoginReducer)
+- got to store.js and import and include in reducer object 
+- create an action in userActions.js
+- create ProfileScreen.js file 
+- copy registerScreen to this screen
+- add ProfileScreen to app.js 
+- add constant for user updates 
+- go to reducer and add userUpdateProfileReducer
+- add new reducer to setore.js file 
+- got to user action and define for updateProfile 
+- test functionality
+
+
+#adding shipping details
+- create a new componenet  file ShippingScreen.js   
+- bring into app.js
+- adjust cartActions to implement save shipping address 
+- create constant for shipping address in cartConstants
