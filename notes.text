@@ -911,4 +911,11 @@ heroku create e-veloapp
 Creating ⬢ e-veloapp... done
 https://e-veloapp.herokuapp.com/ | https://git.heroku.com/e-veloapp.git
 - add Procfile in root where config for heroku will be stored 
-
+-edit script in packege.json to 
+heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
+- init git and all 
+git add .
+git commit -m 'prepare for deployment'
+#add remote reposatory 
+heroku git:remote -a e-veloapp
+#push 
