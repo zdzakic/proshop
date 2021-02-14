@@ -4,18 +4,24 @@ import {
    authUser, 
    registerUser, 
    getUserProfile, 
-   updateUserProfile} from '../controllers/userController.js'
-import {protect} from '../middleware/authMiddleware.js'
+   updateUserProfile,
+   getUsers, deleteUser,getUserById, updateUser} from '../controllers/userController.js'
+import {protect, admin} from '../middleware/authMiddleware.js'
 
 //route for registered user 
-router.route('/').post(registerUser)
+router.route('/').post(registerUser).get(protect, admin, getUsers)
 //root route for login 
 router.post('/login', authUser)
+
 //add middleware protect route (login required)
 router
-   .route('/profile')
-   .get(protect, getUserProfile)
-   .put(protect, updateUserProfile)
-
+  .route('/profile')
+  .get(protect, getUserProfile)
+  .put(protect, updateUserProfile)
+router
+  .route('/:id')
+  .delete(protect, admin, deleteUser)
+  .get(protect, admin, getUserById)
+  .put(protect, admin, updateUser)
 
 export default router

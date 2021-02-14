@@ -540,3 +540,375 @@ export const USER_DETAILS_FAIL = 'USER_DETAILS_FAIL'
 - bring into app.js
 - adjust cartActions to implement save shipping address 
 - create constant for shipping address in cartConstants
+
+#add CheckoutSteps.js where you defines steps for ordering
+
+#add Payment Screen and Save Payment method
+
+#add place oder screen, actions, reducers etc
+
+#add placeOrderScreen.js 
+- add  it to app.js
+- add order controller.js in backend 
+- add orderRoutes.s in backed 
+- add to server.js file 
+
+#create order contants in FE   
+#create order reducers
+# bring all into store.js 
+#create userActions.js in actions 
+
+#fetching order fom db 
+#adjust orderController
+#add routes
+
+#create orderScreen.js file in FE  
+- order details constants
+export const ORDER_DETAILS_REQUEST= 'ORDER_DETAILS_REQUEST'
+export const ORDER_DETAILS_SUCCESS= 'ORDER_DETAILS_SUCCESS'
+export const ORDER_DETAILS_FAIL= 'ORDER_DETAILS_FAIL'
+
+- bring them to order reducer
+- add reducer to store.js 
+- go to orderActions.js and do stuff 
+- add to app.js
+
+#implementing payment via PayPal (PP)
+- add pay order, actions and reducers 
+- add constants 
+- add to store.js
+- add actions
+- create sanbod PP account and proshop sanbox app
+- get client it and put it in .env
+- add in server.js route for pp 
+- add PP button via npm -i react-paypal-button-v2 in FE
+- import pp pckg into the screen.
+- add button to screen
+- run payment by using creds from sandbox personal account
+
+#show orders on the user profile page (my orders)
+- BE and new controller func getMyOrders
+- go to user routes, import and add it 
+- add constants for my orders 
+- add reducers for my order
+- add actions for myorders
+- add to store.js 
+- add all to profile screen.js
+
+#adding myorders in profile page
+- add my order connstants 
+export const ORDER_LIST_MY_REQUEST= 'ORDER_LIST_MY_REQUEST'
+export const ORDER_LIST_MY_SUCCESS= 'ORDER_LIST_MY_SUCCESS'
+export const ORDER_LIST_MY_FAIL= 'ORDER_LIST_MY_FAIL'
+
+- go to reducer and add func
+
+export const orderListMyReducer = (
+   state = {orders:[]}, action) => {
+   switch(action.type) {
+      case ORDER_LIST_MY_REQUEST:
+         return {
+            loading: true,
+         }
+      case ORDER_LIST_MY_SUCCESS:
+         return {
+            loading: false, 
+            orders: action.payload
+         }
+      case ORDER_LIST_MY_FAIL:
+         return {
+            loading: false, 
+            error: action.payload
+         }
+      
+      default:
+         return state
+   } 
+}
+
+#go to store.js and bring it in 
+# got ot action and add it there too 
+export const listMyOrders = () => async (dispatch, getState) => {
+   try {
+      dispatch({
+         type: ORDER_LIST_MY_REQUEST,
+      })
+
+      const {userLogin:{userInfo}} = getState()
+
+      const config = {
+         headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+         },
+      }
+
+      // data by supplying three args, route, creds and config 
+      const {data} = await axios.get(
+         `/api/orders/myorders`, 
+         config
+      )
+      //dispatch request
+      dispatch({
+         type: ORDER_LIST_MY_SUCCESS,
+         payload: data
+      })
+
+   } catch (error) {
+      dispatch({
+         type: ORDER_LIST_MY_FAIL,
+         payload: error.response && error.response.data.message 
+         ? error.response.data.message 
+         : error.message
+      })
+   }
+}
+
+#go to profile screen and add components and funtionality to
+
+
+#ADMIN panel 
+- add getUsers in userController in BE
+- add /api;users route in userRoutes.js with protected option
+//route for registered user 
+router.route('/').post(registerUser).get(protect, getUsers)
+
+- in middleware auth, add only admin users to get all users 
+
+
+#ADMIN USER LIST as an admin 
+#add admin panel 
+#in actions , userConstants.s create user_list_request contstants 
+#in user reducer create userListReducer func 
+#do userActions.js 
+#add to the store.js
+#create a new screen for it called userListScreen.js
+$bring screen it to App.js 
+#add in components Header 
+
+
+#add admin user delete 
+#user controller in backend 
+# add func to delete user 
+//@DESC     Delete user
+//@ROUTE    DELETE /api/user/:id
+//@ACCESS   access : Private /Admin
+const deleteuser = asyncHandler(async(req, res) => {
+
+   const user = await User.findById(req.params.id)
+
+   if (user) {
+      await.user.remove()
+      res.json({message: 'User removed'})
+   }else {
+      res.status(404)
+      throw new Error('User not found!')
+   }
+
+})
+
+#add to user routes 
+router.route('/:id').delete(protect, admin, deleteUser)
+
+#test with postman first 
+
+#cosmetic in FE  
+#user constants first and add three  constants
+#user reducer and add functionality
+# add to the store
+#add action in userAction
+#implement function on UserListScreen.js with deleteHandler
+ const deleteHandler = (id) => {
+      if(window.confirm('Are you sure?')) {
+         dispatch(deleteUser(id))
+      }       
+   }
+
+
+#admin user edit 
+#create routes for getting user and edit user in userController
+getUserById
+updateUser
+
+#go to user routes and add end points 
+router
+  .route('/:id')
+  .delete(protect, admin, deleteUser)
+  .get(protect, admin, getUserById)
+  .put(protect, admin, updateUser)
+
+#implement FE screen
+- create UserEditScreen.s file 
+- add it to App.js file 
+- add constants for edit Uset 
+- add to userreducer
+- add to store.js
+- edit userActions.js 
+- edit UserEditScreen.js
+
+#implement admin product list screen
+- create ProductListScreen.js 
+- add to App.js above file 
+- add product delete funtionality
+- edit prodcutController.js functionality and func deleteProduct
+- add product route and import middleware admin protection
+- test in postman 
+- add FE funtionality
+- add product constants 
+- edit productReducer
+- edit productActions
+- add to store.js
+- test and import data again | stop server and than npm run data:import
+
+#ADMIN create and update
+- edit productControllerand createProduct and updateProduct funcs
+- go to productRoutes.js and adjust it  
+   - seperate routes by slash and :ids
+
+router.route('/').get(getProducts).post(protect, admin, createProduct)
+router.route('/:id').get(getProductById).delete(protect, admin, deleteProduct).put(protect, admin, updateProduct )
+
+- test in postman  to make sure it works 
+#front end, create functionality
+- create constants 
+export const PRODUCT_CREATE_REQUEST = 'PRODUCT_CREATE_REQUEST'
+export const PRODUCT_CREATE_FAIL = 'PRODUCT_CREATE_FAIL'
+export const PRODUCT_CREATE_SUCCESS = 'PRODUCT_CREATE_SUCCESS'
+export const PRODUCT_CREATE_RESET = 'PRODUCT_CREATE_RESET'
+
+-in productReducer add func  productCreateReducer
+- add reducer to store 
+- add func createProduct in productActions.js file 
+- add to ProductListScreen.js file funtionality for edit product 
+
+#add product edit screen action and copy UserEditScreen and adjust it  
+- add file to app.js 
+- edit  ProductEditScreen.js 
+
+#add productConstants for update action 
+export const PRODUCT_UPDATE_REQUEST = 'PRODUCT_UPDATE_REQUEST'
+export const PRODUCT_UPDATE_FAIL = 'PRODUCT_UPDATE_FAIL'
+export const PRODUCT_UPDATE_SUCCESS = 'PRODUCT_UPDATE_SUCCESS'
+export const PRODUCT_UPDATE_RESET = 'PRODUCT_UPDATE_RESET'
+
+#add productReducer for updateProduct | productUpdateReducer
+# add  reducer to the store.js  
+# add into the product Actions
+
+#image upload instead of text 
+#install npm i multer in root dir
+#start server 
+# in root folder create uplaod folder 
+#create uploadRoutes.js in BE with all functionality 
+# add this to server.js file 
+#adjust ProductEditScreen.js 
+
+#Admin Orders listings 
+- edit orderController and add getOrders
+- go to orderRoutes 
+//route for orders 
+router.route('/').post(protect, addOrderItems).get(protect, admin, getOrders)
+- add order constants 
+- go to reducer orderListReducer
+- add to store.s file 
+- add order actions and add listOrders
+- create new screen OrderListScreen.js 
+- add to app.js file 
+
+#mark an order as delivered
+- add func updateOrderToDelivered in orderController
+- go to orderRoutes and import above func 
+- fe add constants 
+- add reducer for order deliver 
+- add above reducer to store.js 
+- create a order Actions for deliver
+- go to orderScreen.js and add button to set oder delivered
+
+
+#add review funtionality
+- add loggin npm i morgan 
+- in server.s add morgen 
+// add morgan in case of dev mode
+if(process.env === 'development') {
+   app.use(morgan('dev'))
+}
+- add user object in productModol under userSchema 
+- go to productController and add createNewReview func 
+- add it to productRoutep
+router.route('/:id/reviews').post(protect, createProductReview)
+- test in postman and make sure it works   
+
+#add FE 
+- constants  
+- go to reducers and do productReviewCreateReducer
+- add to store.js 
+- add to productActions.js
+- go to productScreen.js  
+
+
+#ADD search box p
+- inside of components create SearchBox.js file
+- add to App.js above route form search box compoenent
+- add search box comp into the header 
+Note: searchbox has to be wraped with Route compnent since we dont have access to
+-edit homescreen.js 
+- edit listProducts in productActions.sjs and add keyword sarch route 
+const {data} = await axios.get(`/api/products?keyword=${keyword}`)
+- edir productController.js file and func getProducts
+
+#product pagination 
+- BE first and with productController
+- adjust productActions.js
+- add to App.js and routes 
+- edit HomeScreen.js 
+- create pagination component in components
+- bring it to homescreen
+- add paginate to backend admin panel 
+
+
+#add top proudcts 
+- productController.js create a route 
+- productRoutes.js
+- constants 
+- reducers
+- add to store.js
+- productActions
+-create a ProductCorousel in components  
+- import this component into the homescreen
+
+
+#custome page title 
+- go to fronend
+npm i react-helmet 
+- create a new component callemd Meta 
+- add component to any screen you want - got to homescreen and add <Helmet component>
+
+
+#build application | combine fron and backend end 
+cd /frontend
+npm run build 
+- edit server.js file and add funcs for dev and prod
+// define build for prod
+if(process.env.NODE_ENV === 'production'){
+   app.use(express.static(path.join(__dirname,'/frontend/build')))
+}
+
+#create a route
+if(process.env.NODE_ENV === 'production'){
+   app.use(express.static(path.join(__dirname,'/frontend/build')))
+   app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'frontend','build', 'index.html')))
+}else {
+   app.get('/', (req, res) => {
+      res.send('API is running')
+   })
+}
+
+#deploy to heureku
+- create heroku Account
+- install heroku cli tool
+brew tap heroku/brew && brew install heroku
+heroku login
+heroku create e-veloapp
+Creating ⬢ e-veloapp... done
+https://e-veloapp.herokuapp.com/ | https://git.heroku.com/e-veloapp.git
+- add Procfile in root where config for heroku will be stored 
+
